@@ -4,7 +4,15 @@ class Routes {
 
   String login = "/login";
   String signup = "/signup";
+
   String getAllProducts = "/products";
   String getProductById = "/products/{id}";
   String getProductsByCategory = "/products/{category}/{value}";
+
+  //Transactions
+  String getAllTransactions = "/transactions";
+  String getTransactionById = "/transactions/{id}";
+  String updateTransaction = "/transactions/update";
+  String addTransaction = "/transactions/add";
+  String deleteTransactionById = "/transactions/delete";
 }

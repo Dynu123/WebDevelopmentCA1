@@ -1,8 +1,9 @@
 import 'package:makeup_webapp/ApiCalls/api_calls.dart';
 import 'package:makeup_webapp/ApiCalls/auth_controller.dart';
 import 'package:makeup_webapp/Model/User/UserModel/register_user_model/register_user_model.dart';
-import 'package:makeup_webapp/Screens/screen_home.dart';
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:makeup_webapp/Screens/screen_login.dart';
 
 class ScreenSignup extends StatefulWidget {
   ScreenSignup({Key? key}) : super(key: key);
@@ -173,7 +174,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
                       child: ElevatedButton(
                           onPressed: () {
                             //action
-                            signup(context);
+                            signupUser();
                           },
                           child: const Text("Sign up"))),
                   const SizedBox(
@@ -197,6 +198,40 @@ class _ScreenSignupState extends State<ScreenSignup> {
         ),
       ),
     );
+  }
+
+  Future signupUser() async {
+    final name = _nameController.text;
+    final email = _emailController.text;
+    final phone = _phoneController.text;
+    final password = _passwordController.text;
+    final confirmPassword = _confirmPasswordController.text;
+    AuthController authController = AuthController();
+
+    var response =
+        await authController.registerUser(name, email, password, phone);
+    var signUpResp = json.decode(response.body);
+    if (response.statusCode == 200) {
+      if (signUpResp['result']['code'] == '200') {
+        var message = signUpResp['result']['message'];
+        ScaffoldMessenger.of(_scaffoldKey.currentContext!)
+            .showSnackBar(SnackBar(content: Text(message)));
+        Navigator.of(_scaffoldKey.currentContext!).pushReplacement(
+          MaterialPageRoute(builder: (ctx) => const ScreenLogin()),
+        );
+      } else {
+        var message = signUpResp['result']['message'];
+        ScaffoldMessenger.of(_scaffoldKey.currentContext!)
+            .showSnackBar(SnackBar(content: Text(message)));
+      }
+    } else if (response.statusCode == 400) {
+      var message = signUpResp['result']['message'];
+      ScaffoldMessenger.of(_scaffoldKey.currentContext!)
+          .showSnackBar(SnackBar(content: Text(message)));
+    } else {
+      ScaffoldMessenger.of(_scaffoldKey.currentContext!)
+          .showSnackBar(SnackBar(content: Text(response.body.toString())));
+    }
   }
 
   Future signup(BuildContext context) async {

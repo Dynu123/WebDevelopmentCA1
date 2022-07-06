@@ -6,6 +6,16 @@ part 'user_model_response.g.dart';
 
 @JsonSerializable()
 class UserModelResponse {
+
+  //--singleton
+  static final UserModelResponse instance = UserModelResponse._internal();
+  factory() {
+    return instance;
+  }
+
+  UserModelResponse._internal();
+  //---end singleton
+
   Result? result;
 
   UserModelResponse({this.result});

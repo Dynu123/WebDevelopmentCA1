@@ -1,20 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:makeup_webapp/Model/Transaction/transaction_model/transaction_model.dart';
 import 'package:makeup_webapp/Screens/screen_list_expense.dart';
 
 class ScreenExpenseDetail extends StatelessWidget {
-  final String title;
-  final String amount;
-  final TransactionType transactionType;
-  final String? note;
-  final String? transactionDate;
+  TransactionModel transaction;
 
-  const ScreenExpenseDetail({
+  ScreenExpenseDetail({
     Key? key,
-    required this.title,
-    required this.amount,
-    required this.transactionType,
-    this.transactionDate,
-    this.note,
+    required this.transaction,
   }) : super(key: key);
 
   @override
@@ -35,7 +28,7 @@ class ScreenExpenseDetail extends StatelessWidget {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(30),
-          child: Container(
+          child: SizedBox(
             width: double.infinity,
             height: double.infinity,
             child: Column(
@@ -44,7 +37,7 @@ class ScreenExpenseDetail extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Text(
-                    "Title: $title",
+                    transaction.title ?? "",
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
@@ -53,7 +46,7 @@ class ScreenExpenseDetail extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Text(
-                    "Amount: $amount",
+                    transaction.amount ?? "",
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
@@ -62,7 +55,7 @@ class ScreenExpenseDetail extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Text(
-                    "Transaction type: ${transactionType.name}",
+                    transaction.type ?? "",
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
@@ -71,7 +64,7 @@ class ScreenExpenseDetail extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Text(
-                    "Transaction date: $transactionDate",
+                    transaction.date ?? "",
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
@@ -80,7 +73,7 @@ class ScreenExpenseDetail extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Text(
-                    "Description: $note",
+                    transaction.note ?? "",
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                     ),

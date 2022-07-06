@@ -4,6 +4,18 @@ part 'register_user_model.g.dart';
 
 @JsonSerializable()
 class UserModel {
+  //--singleton
+  static final UserModel instance = UserModel._internal();
+  factory() {
+    return instance;
+  }
+
+  UserModel._internal();
+  //---end singleton
+
+  @JsonKey(name: "id")
+  int? id;
+
   @JsonKey(name: "name")
   String? name;
 
@@ -19,9 +31,11 @@ class UserModel {
   @JsonKey(name: "token")
   String? token;
 
-  UserModel({this.name, this.email, this.password, this.phone, this.token});
+  UserModel(
+      {this.id, this.name, this.email, this.password, this.phone, this.token});
 
   UserModel.create({
+    this.id,
     required this.name,
     required this.email,
     required this.password,
@@ -33,12 +47,4 @@ class UserModel {
   }
 
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
-
-  //--singleton
-  UserModel._internal();
-  static UserModel instance = UserModel._internal();
-  factory() {
-    return instance;
-  }
-//---end singleton
 }

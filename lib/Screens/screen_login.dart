@@ -2,11 +2,12 @@ import 'package:makeup_webapp/ApiCalls/api_calls.dart';
 import 'package:makeup_webapp/ApiCalls/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:makeup_webapp/Model/User/UserModel/register_user_model/register_user_model.dart';
-import 'package:makeup_webapp/Screens/screen_home.dart';
+import 'package:makeup_webapp/Model/User/UserModelResponse/user_model_response/user_model_response.dart';
 import 'package:makeup_webapp/Screens/screen_list_expense.dart';
+import 'dart:convert';
 
 class ScreenLogin extends StatefulWidget {
-  ScreenLogin({Key? key}) : super(key: key);
+  const ScreenLogin({Key? key}) : super(key: key);
 
   @override
   State<ScreenLogin> createState() => _ScreenLoginState();
@@ -106,7 +107,7 @@ class _ScreenLoginState extends State<ScreenLogin> {
                               onPressed: () {
                                 //action
                                 if (_formKey.currentState!.validate()) {
-                                  login(context);
+                                  loginUser();
                                 } else {
                                   print("no data");
                                 }
@@ -134,6 +135,37 @@ class _ScreenLoginState extends State<ScreenLogin> {
             ),
           ),
         ));
+  }
+
+  Future<void> loginUser() async {
+    final email = _emailController.text;
+    final password = _passwordController.text;
+    AuthController authController = AuthController();
+
+    var response = await authController.loginUser(email, password);
+    var loginResp = json.decode(response.body);
+    if (response.statusCode == 200) {
+      if (loginResp['result']['code'] == '200') {
+        LoginUserDB.instance.userModel =
+            UserModel.fromJson(loginResp['result']['data']);
+        Navigator.of(_scaffoldKey.currentContext!).pushReplacement(
+          MaterialPageRoute(
+            builder: (ctx) => const ScreenListExpense(),
+          ),
+        );
+      } else {
+        var message = loginResp['result']['message'];
+        ScaffoldMessenger.of(_scaffoldKey.currentContext!)
+            .showSnackBar(SnackBar(content: Text(message)));
+      }
+    } else if (response.statusCode == 400) {
+      var message = loginResp['result']['message'];
+      ScaffoldMessenger.of(_scaffoldKey.currentContext!)
+          .showSnackBar(SnackBar(content: Text(message)));
+    } else {
+      ScaffoldMessenger.of(_scaffoldKey.currentContext!)
+          .showSnackBar(SnackBar(content: Text(response.body.toString())));
+    }
   }
 
   Future<void> login(BuildContext context) async {
@@ -167,16 +199,12 @@ class _ScreenLoginState extends State<ScreenLogin> {
         setState(() {
           _message = user.result?.message;
           _messageColor = Colors.green;
+          UserModelResponse.instance.result?.userModel = user.result?.userModel;
+          print(
+              "*******user id = ${UserModelResponse.instance.result?.userModel?.id}");
           Navigator.of(_scaffoldKey.currentContext!).pushReplacement(
             MaterialPageRoute(
-              builder: (ctx) => const ScreenListExpense(
-                title: "Trip to howth",
-                amount: "euro 140",
-                transactionType: TransactionType.income,
-                note:
-                    "It was a wonderful tripto howth and we spent a total of euro 140 altogether",
-                transactionDate: "06-04-2022",
-              ),
+              builder: (ctx) => ScreenListExpense(),
             ),
           );
         });
