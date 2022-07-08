@@ -14,9 +14,27 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(primaryColor: Colors.black),
-      home:
-          ScreenLogin(), //ProductItem(index: 0, name: 'lipstick', price: 'price'),
+      theme: ThemeData(
+        textButtonTheme: TextButtonThemeData(
+            style: ButtonStyle(
+                foregroundColor: MaterialStateProperty.all(Colors.black))),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(Colors.black),
+          ),
+        ),
+        appBarTheme: const AppBarTheme(backgroundColor: Colors.black),
+        inputDecorationTheme: const InputDecorationTheme(
+          iconColor: Colors.black,
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.black),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.black),
+          ),
+        ),
+      ),
+      home: ScreenLogin(),
       routes: {
         "login": (ctx) {
           return ScreenLogin();
@@ -27,7 +45,7 @@ class MyApp extends StatelessWidget {
         "home": (ctx) {
           return ScreenHome();
         }
-      },
+      }, //ProductItem
     );
   }
 }

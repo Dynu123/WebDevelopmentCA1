@@ -32,7 +32,7 @@ class TransactionController {
   }
 
   Future<http.Response?> addTransaction(String title, String amount,
-      String type, String date, String note, int? userId) async {
+      String type, String? date, String note, int? userId) async {
     String url = Routes().baseUrl + Routes().addTransaction;
     Map data = {
       'title': title,

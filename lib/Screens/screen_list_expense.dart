@@ -1,4 +1,8 @@
+import 'dart:html';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:makeup_webapp/ApiCalls/auth_controller.dart';
 import 'package:makeup_webapp/ApiCalls/transaction_controller.dart';
 import 'package:makeup_webapp/Model/Transaction/transaction_model/transaction_model.dart';
 import 'package:makeup_webapp/Screens/screen_add_transaction.dart';
@@ -23,28 +27,47 @@ class _ScreenListExpenseState extends State<ScreenListExpense> {
 
   List<TransactionModel> transactions = [];
 
+  @protected
+  @mustCallSuper
+  @override
+  void initState() {
+    //list api
+    getTransactionList();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       //call get transaction list api
-      await getAllTransactions();
     });
     return Scaffold(
         key: _scaffoldKey,
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.black,
+          child: const Icon(Icons.add),
+          onPressed: () {
+            goToAddTransactionPage(context, ActionType.add, null);
+          },
+        ),
         appBar: AppBar(
           title: Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.only(right: 16),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text("All transactions"),
-                const SizedBox(),
-                IconButton(
+                Text("Welcome, ${LoginUserDB.instance.userModel?.name}!"),
+                TextButton(
                   onPressed: () {
-                    //add transaction
-                    goToAddTransactionPage(context, ActionType.add, null);
+                    signout(context);
                   },
-                  icon: const Icon(Icons.add_box),
-                )
+                  child: const Text(
+                    "Logout",
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -52,62 +75,155 @@ class _ScreenListExpenseState extends State<ScreenListExpense> {
         backgroundColor: Colors.white,
         body: SafeArea(
             child: ListView.separated(
-                itemBuilder: (context, index) {
-                  return Card(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ListTile(
-                          leading: const Icon(Icons.currency_bitcoin, size: 45),
-                          title: Text(transactions[index].title ?? ""),
-                          subtitle: Text(transactions[index].type ?? ""),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Card(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ListTile(
+                      leading: const Icon(
+                        Icons.currency_exchange,
+                        size: 30,
+                        color: Color.fromARGB(255, 4, 134, 71),
+                      ),
+                      title: Text(
+                        transactions[index].title ?? "",
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 4, 134, 71),
+                          fontWeight: FontWeight.normal,
+                          fontSize: 17,
+                        ),
+                      ),
+                      subtitle: Text(
+                        transactions[index].type ?? "",
+                        style: const TextStyle(color: Colors.grey),
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              IconButton(
-                                onPressed: () {
-                                  //edit item
-                                  goToAddTransactionPage(
-                                    context,
-                                    ActionType.edit,
-                                    transactions[index],
-                                  );
-                                },
-                                icon: const Icon(Icons.edit),
+                              Text(
+                                "€${transactions[index].amount}",
+                                style: const TextStyle(
+                                  color: Color.fromARGB(255, 4, 134, 71),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                ),
                               ),
-                              IconButton(
-                                onPressed: () {
-                                  //delete item
-                                  deleteTransaction(transactions[index]);
-                                },
-                                icon: const Icon(Icons.delete),
+                              const SizedBox(
+                                height: 8,
                               ),
-                              IconButton(
-                                  onPressed: () {
-                                    //go to detail page
-                                    goToDetailPage(
-                                        context, transactions[index]);
-                                  },
-                                  icon: const Icon(Icons.arrow_forward)),
+                              Text(
+                                transactions[index].date ?? "",
+                                style: const TextStyle(color: Colors.grey),
+                              ),
                             ],
                           ),
-                        ),
-                      ],
+                          IconButton(
+                            onPressed: () {
+                              //edit item
+                              goToAddTransactionPage(
+                                context,
+                                ActionType.edit,
+                                transactions[index],
+                              );
+                            },
+                            icon: const Icon(
+                              Icons.edit,
+                              color: Color.fromARGB(255, 4, 134, 71),
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              //delete item
+                              showDialog(
+                                  context: context,
+                                  builder: (ctx) {
+                                    return AlertDialog(
+                                      title: const Text(
+                                        "Are you sure you want to delete?",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.normal,
+                                            fontSize: 17),
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(ctx).pop();
+                                          },
+                                          child: const Text(
+                                            "Cancel",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15,
+                                              color: Color.fromARGB(
+                                                  255, 4, 134, 71),
+                                            ),
+                                          ),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            deleteTransaction(
+                                                transactions[index]);
+                                            Navigator.of(ctx).pop();
+                                          },
+                                          child: const Text(
+                                            "OK",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15,
+                                              color: Color(0xB7D8382D),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  });
+                            },
+                            icon: const Icon(
+                              Icons.delete,
+                              color: Colors.red,
+                            ),
+                          ),
+                          IconButton(
+                              onPressed: () {
+                                //go to detail page
+                                goToDetailPage(context, transactions[index]);
+                              },
+                              icon: const Icon(
+                                Icons.arrow_forward,
+                                //color: Color.fromARGB(255, 4, 134, 71),
+                              )),
+                        ],
+                      ),
                     ),
-                  );
-                },
-                separatorBuilder: (ctx, index) {
-                  return const Divider(
-                    thickness: 0,
-                  );
-                },
-                itemCount: transactions.length)));
+                  ],
+                ),
+              ),
+            );
+          },
+          separatorBuilder: (ctx, index) {
+            return const Divider(
+              thickness: 0,
+            );
+          },
+          itemCount: transactions.length,
+        )));
   }
 
   signout(BuildContext context) {
+    LoginUserDB.instance.userModel?.token = null;
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (ctx1) => const ScreenLogin()),
         (route) => false);
+  }
+
+  getTransactionList() async {
+    await getAllTransactions();
   }
 
   Future<void> getAllTransactions() async {
@@ -152,12 +268,39 @@ class _ScreenListExpenseState extends State<ScreenListExpense> {
 
   goToAddTransactionPage(
       BuildContext context, ActionType action, TransactionModel? transaction) {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (ctx) => ScreenAddTransaction(
-        action: action,
-        transaction: transaction,
-      ),
-    ));
+    showDialog(
+        context: context,
+        builder: (ctx) {
+          return AlertDialog(
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10.0))),
+            content: Builder(
+              builder: (context) {
+                // Get available height and width of the build area of this widget. Make a choice depending on the size.
+                var height = MediaQuery.of(context).size.height;
+                var width = MediaQuery.of(context).size.width;
+
+                return SizedBox(
+                  width: width - 800,
+                  height: height,
+                  child: ScreenAddTransaction(
+                    action: action,
+                    transaction: transaction,
+                  ),
+                );
+              },
+            ),
+          );
+        }).then((_) => setState(() {
+          getAllTransactions();
+        }));
+
+    // Navigator.of(context).push(MaterialPageRoute(
+    //   builder: (ctx) => ScreenAddTransaction(
+    //     action: action,
+    //     transaction: transaction,
+    //   ),
+    // ));
   }
 
   Future<void> deleteTransaction(TransactionModel transaction) async {
@@ -168,15 +311,31 @@ class _ScreenListExpenseState extends State<ScreenListExpense> {
 
     if (response.statusCode == 200) {
       var message = deletedTransResp['result']['message'];
-      ScaffoldMessenger.of(_scaffoldKey.currentContext!)
-          .showSnackBar(SnackBar(content: Text(message)));
+      ScaffoldMessenger.of(_scaffoldKey.currentContext!).showSnackBar(SnackBar(
+        content: Text(
+          message,
+          style: const TextStyle(color: Colors.white),
+        ),
+        backgroundColor: const Color.fromARGB(255, 4, 134, 71),
+      ));
+      getTransactionList();
     } else if (response.statusCode == 400) {
       var message = deletedTransResp['result']['message'];
-      ScaffoldMessenger.of(_scaffoldKey.currentContext!)
-          .showSnackBar(SnackBar(content: Text(message)));
+      ScaffoldMessenger.of(_scaffoldKey.currentContext!).showSnackBar(SnackBar(
+        content: Text(
+          message,
+          style: const TextStyle(color: Colors.white),
+        ),
+        backgroundColor: const Color(0xB7D8382D),
+      ));
     } else {
-      ScaffoldMessenger.of(_scaffoldKey.currentContext!)
-          .showSnackBar(SnackBar(content: Text(response.body.toString())));
+      ScaffoldMessenger.of(_scaffoldKey.currentContext!).showSnackBar(SnackBar(
+        content: Text(
+          response.body.toString(),
+          style: const TextStyle(color: Colors.white),
+        ),
+        backgroundColor: const Color(0xB7D8382D),
+      ));
     }
   }
 }

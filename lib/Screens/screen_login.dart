@@ -26,13 +26,13 @@ class _ScreenLoginState extends State<ScreenLogin> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
-        backgroundColor: Colors.blueGrey,
+        backgroundColor: Colors.black,
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: Container(
               decoration: const BoxDecoration(
-                  color: Colors.white,
+                  color: Colors.grey,
                   borderRadius: BorderRadius.all(Radius.circular(10))),
               height: 385,
               width: 400,
@@ -44,13 +44,20 @@ class _ScreenLoginState extends State<ScreenLogin> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       TextFormField(
+                        cursorColor: Colors.black,
                         controller: _emailController,
                         decoration: const InputDecoration(
+                            icon: Icon(Icons.email_rounded),
                             border: OutlineInputBorder(),
                             hintText: "Enter username"),
                         validator: (value) {
+                          bool emailValid = RegExp(
+                                  r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                              .hasMatch(value ?? "");
                           if (value == null || value.isEmpty) {
                             return "Field cannot be empty";
+                          } else if (!emailValid) {
+                            return "Email is not valid";
                           } else {
                             return null;
                           }
@@ -60,9 +67,11 @@ class _ScreenLoginState extends State<ScreenLogin> {
                         height: 20,
                       ),
                       TextFormField(
+                        cursorColor: Colors.black,
                         controller: _passwordController,
                         obscureText: true,
                         decoration: const InputDecoration(
+                            icon: Icon(Icons.password_rounded),
                             border: OutlineInputBorder(),
                             hintText: "Enter password"),
                         validator: (value) {
@@ -104,6 +113,9 @@ class _ScreenLoginState extends State<ScreenLogin> {
                           width: double.infinity,
                           height: 40,
                           child: ElevatedButton(
+                              // ignore: prefer_const_constructors
+                              style: ElevatedButton.styleFrom(
+                                  primary: Colors.black),
                               onPressed: () {
                                 //action
                                 if (_formKey.currentState!.validate()) {
@@ -121,6 +133,8 @@ class _ScreenLoginState extends State<ScreenLogin> {
                         children: [
                           const Text("Don't have an account yet?"),
                           TextButton(
+                              style:
+                                  TextButton.styleFrom(primary: Colors.black),
                               onPressed: () {
                                 //action
                                 Navigator.of(context).pushNamed("signup");
@@ -143,28 +157,48 @@ class _ScreenLoginState extends State<ScreenLogin> {
     AuthController authController = AuthController();
 
     var response = await authController.loginUser(email, password);
-    var loginResp = json.decode(response.body);
-    if (response.statusCode == 200) {
-      if (loginResp['result']['code'] == '200') {
-        LoginUserDB.instance.userModel =
-            UserModel.fromJson(loginResp['result']['data']);
-        Navigator.of(_scaffoldKey.currentContext!).pushReplacement(
-          MaterialPageRoute(
-            builder: (ctx) => const ScreenListExpense(),
-          ),
-        );
-      } else {
+    if (response != null) {
+      var loginResp = json.decode(response.body);
+      if (response.statusCode == 200) {
+        if (loginResp['result']['code'] == '200') {
+          LoginUserDB.instance.userModel =
+              UserModel.fromJson(loginResp['result']['data']);
+          Navigator.of(_scaffoldKey.currentContext!).pushReplacement(
+            MaterialPageRoute(
+              builder: (ctx) => const ScreenListExpense(),
+            ),
+          );
+        } else {
+          var message = loginResp['result']['message'];
+          ScaffoldMessenger.of(_scaffoldKey.currentContext!)
+              .showSnackBar(SnackBar(
+            content: Text(
+              message,
+              style: const TextStyle(color: Colors.white),
+            ),
+            backgroundColor: const Color(0xB7D8382D),
+          ));
+        }
+      } else if (response.statusCode == 400) {
         var message = loginResp['result']['message'];
         ScaffoldMessenger.of(_scaffoldKey.currentContext!)
-            .showSnackBar(SnackBar(content: Text(message)));
+            .showSnackBar(SnackBar(
+          content: Text(
+            message,
+            style: const TextStyle(color: Colors.white),
+          ),
+          backgroundColor: const Color(0xB7D8382D),
+        ));
+      } else {
+        ScaffoldMessenger.of(_scaffoldKey.currentContext!)
+            .showSnackBar(SnackBar(
+          content: Text(
+            response.body.toString(),
+            style: const TextStyle(color: Colors.white),
+          ),
+          backgroundColor: const Color(0xB7D8382D),
+        ));
       }
-    } else if (response.statusCode == 400) {
-      var message = loginResp['result']['message'];
-      ScaffoldMessenger.of(_scaffoldKey.currentContext!)
-          .showSnackBar(SnackBar(content: Text(message)));
-    } else {
-      ScaffoldMessenger.of(_scaffoldKey.currentContext!)
-          .showSnackBar(SnackBar(content: Text(response.body.toString())));
     }
   }
 

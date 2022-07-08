@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:makeup_webapp/ApiCalls/api_calls.dart';
 import 'package:makeup_webapp/ApiCalls/auth_controller.dart';
 import 'package:makeup_webapp/Model/User/UserModel/register_user_model/register_user_model.dart';
@@ -31,20 +32,21 @@ class _ScreenSignupState extends State<ScreenSignup> {
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  bool showErrorMessage = false;
+  bool showPassword = false;
+  bool showCPassword = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: Colors.blueGrey,
+      backgroundColor: Colors.black,
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Container(
             width: 400,
             decoration: const BoxDecoration(
-              color: Colors.white,
+              color: Colors.grey,
               borderRadius: BorderRadius.all(Radius.circular(10)),
             ),
             child: Padding(
@@ -53,9 +55,12 @@ class _ScreenSignupState extends State<ScreenSignup> {
                 key: _formKey,
                 child: Column(children: [
                   TextFormField(
+                    cursorColor: Colors.black,
                     controller: _nameController,
                     decoration: const InputDecoration(
-                        hintText: "Name", border: OutlineInputBorder()),
+                        icon: Icon(Icons.person_rounded),
+                        hintText: "Name",
+                        border: OutlineInputBorder()),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return "Field cannot be empty";
@@ -68,12 +73,20 @@ class _ScreenSignupState extends State<ScreenSignup> {
                     height: 20,
                   ),
                   TextFormField(
+                    cursorColor: Colors.black,
                     controller: _emailController,
                     decoration: const InputDecoration(
-                        hintText: "Email", border: OutlineInputBorder()),
+                        icon: Icon(Icons.email_rounded),
+                        hintText: "Email",
+                        border: OutlineInputBorder()),
                     validator: (value) {
+                      bool emailValid = RegExp(
+                              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                          .hasMatch(value ?? "");
                       if (value == null || value.isEmpty) {
                         return "Field cannot be empty";
+                      } else if (!emailValid) {
+                        return "Email is not valid";
                       } else {
                         return null;
                       }
@@ -83,10 +96,23 @@ class _ScreenSignupState extends State<ScreenSignup> {
                     height: 20,
                   ),
                   TextFormField(
+                    cursorColor: Colors.black,
                     controller: _passwordController,
-                    decoration: const InputDecoration(
+                    obscureText: !showPassword,
+                    decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              showPassword = !showPassword;
+                            });
+                          },
+                          icon: Icon(showPassword
+                              ? Icons.visibility_off_rounded
+                              : Icons.visibility_rounded),
+                        ),
+                        icon: const Icon(Icons.password_rounded),
                         hintText: "Enter password",
-                        border: OutlineInputBorder()),
+                        border: const OutlineInputBorder()),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return "Field cannot be empty";
@@ -99,10 +125,23 @@ class _ScreenSignupState extends State<ScreenSignup> {
                     height: 20,
                   ),
                   TextFormField(
+                    obscureText: !showCPassword,
+                    cursorColor: Colors.black,
                     controller: _confirmPasswordController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              showCPassword = !showCPassword;
+                            });
+                          },
+                          icon: Icon(showCPassword
+                              ? Icons.visibility_off_rounded
+                              : Icons.visibility_rounded),
+                        ),
+                        icon: const Icon(Icons.password_rounded),
                         hintText: "Confirm password",
-                        border: OutlineInputBorder()),
+                        border: const OutlineInputBorder()),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return "Field cannot be empty";
@@ -115,9 +154,13 @@ class _ScreenSignupState extends State<ScreenSignup> {
                     height: 20,
                   ),
                   TextFormField(
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    cursorColor: Colors.black,
                     controller: _phoneController,
                     decoration: const InputDecoration(
-                        hintText: "Phone", border: OutlineInputBorder()),
+                        icon: Icon(Icons.phone_rounded),
+                        hintText: "Phone",
+                        border: OutlineInputBorder()),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return "Field cannot be empty";
@@ -125,31 +168,6 @@ class _ScreenSignupState extends State<ScreenSignup> {
                         return null;
                       }
                     },
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  TextFormField(
-                    controller: _addressController,
-                    decoration: const InputDecoration(
-                        hintText: "Address", border: OutlineInputBorder()),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Field cannot be empty";
-                      } else {
-                        return null;
-                      }
-                    },
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Visibility(
-                    visible: showErrorMessage,
-                    child: const Text(
-                      "Password and confirm password fields does not match!",
-                      style: TextStyle(color: Colors.red),
-                    ),
                   ),
                   const SizedBox(
                     height: 20,
@@ -208,29 +226,68 @@ class _ScreenSignupState extends State<ScreenSignup> {
     final confirmPassword = _confirmPasswordController.text;
     AuthController authController = AuthController();
 
-    var response =
-        await authController.registerUser(name, email, password, phone);
-    var signUpResp = json.decode(response.body);
-    if (response.statusCode == 200) {
-      if (signUpResp['result']['code'] == '200') {
-        var message = signUpResp['result']['message'];
-        ScaffoldMessenger.of(_scaffoldKey.currentContext!)
-            .showSnackBar(SnackBar(content: Text(message)));
-        Navigator.of(_scaffoldKey.currentContext!).pushReplacement(
-          MaterialPageRoute(builder: (ctx) => const ScreenLogin()),
-        );
+    if (_formKey.currentState!.validate()) {
+      if (password == confirmPassword) {
+        var response =
+            await authController.registerUser(name, email, password, phone);
+        var signUpResp = json.decode(response.body);
+        if (response.statusCode == 200) {
+          if (signUpResp['result']['code'] == '200') {
+            var message = signUpResp['result']['message'];
+            ScaffoldMessenger.of(_scaffoldKey.currentContext!)
+                .showSnackBar(SnackBar(
+              content: Text(
+                message,
+                style: const TextStyle(color: Colors.white),
+              ),
+              backgroundColor: const Color.fromARGB(255, 4, 134, 71),
+            ));
+            Navigator.of(_scaffoldKey.currentContext!).pushReplacement(
+              MaterialPageRoute(builder: (ctx) => const ScreenLogin()),
+            );
+          } else {
+            var message = signUpResp['result']['message'];
+            ScaffoldMessenger.of(_scaffoldKey.currentContext!)
+                .showSnackBar(SnackBar(
+              content: Text(
+                message,
+                style: const TextStyle(color: Colors.white),
+              ),
+              backgroundColor: const Color(0xB7D8382D),
+            ));
+          }
+        } else if (response.statusCode == 400) {
+          var message = signUpResp['result']['message'];
+          ScaffoldMessenger.of(_scaffoldKey.currentContext!)
+              .showSnackBar(SnackBar(
+            content: Text(
+              message,
+              style: const TextStyle(color: Colors.white),
+            ),
+            backgroundColor: const Color(0xB7D8382D),
+          ));
+        } else {
+          ScaffoldMessenger.of(_scaffoldKey.currentContext!)
+              .showSnackBar(SnackBar(
+            content: Text(
+              response.body.toString(),
+              style: const TextStyle(color: Colors.white),
+            ),
+            backgroundColor: const Color(0xB7D8382D),
+          ));
+        }
       } else {
-        var message = signUpResp['result']['message'];
         ScaffoldMessenger.of(_scaffoldKey.currentContext!)
-            .showSnackBar(SnackBar(content: Text(message)));
+            .showSnackBar(const SnackBar(
+          content: Text(
+            "Confirm password does not match",
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Color(0xB7D8382D),
+        ));
       }
-    } else if (response.statusCode == 400) {
-      var message = signUpResp['result']['message'];
-      ScaffoldMessenger.of(_scaffoldKey.currentContext!)
-          .showSnackBar(SnackBar(content: Text(message)));
     } else {
-      ScaffoldMessenger.of(_scaffoldKey.currentContext!)
-          .showSnackBar(SnackBar(content: Text(response.body.toString())));
+      return;
     }
   }
 

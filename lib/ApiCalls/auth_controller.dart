@@ -15,35 +15,41 @@ class LoginUserDB {
 }
 
 class AuthController {
-  Future<http.Response> loginUser(String email, String password) async {
+  Future<http.Response?> loginUser(String email, String password) async {
     String url = Routes().baseUrl + Routes().login;
-    var response = await http.post(
-      Uri.parse(url),
-      body: {
-        'email': email,
-        'password': password,
-      },
-      headers: {
-        "content-type": "application/x-www-form-urlencoded",
-        "Access-Control-Allow-Origin": "*",
-      },
-      encoding: Encoding.getByName('utf-8'),
-    );
     // ignore: avoid_print
-    print('***************************');
-    // ignore: avoid_print
-    print('URL==== $url');
-    // ignore: avoid_print
-    print('___________________________');
-    // ignore: avoid_print
-    print('Http status code==== ${response.statusCode}');
-    // ignore: avoid_print
-    print('____________________________');
-    // ignore: avoid_print
-    print('Login response=====${json.decode(response.body)}');
-    // ignore: avoid_print
-    print('***************************');
-    return response;
+    try {
+      var response = await http.post(
+        Uri.parse(url),
+        body: {
+          'email': email,
+          'password': password,
+        },
+        headers: {
+          "content-type": "application/x-www-form-urlencoded",
+          "Access-Control-Allow-Origin": "*",
+        },
+        encoding: Encoding.getByName('utf-8'),
+      );
+      // ignore: avoid_print
+      print('***************************');
+      // ignore: avoid_print
+      print('URL==== $url');
+      // ignore: avoid_print
+      print('___________________________');
+      // ignore: avoid_print
+      print('Http status code==== ${response.statusCode}');
+      // ignore: avoid_print
+      print('____________________________');
+      // ignore: avoid_print
+      print('Login response=====${response.body}');
+      // ignore: avoid_print
+      print('***************************');
+      return response;
+    } on Exception catch (e) {
+      print("exception==$e");
+    }
+    return null;
   }
 
   Future<http.Response> registerUser(
