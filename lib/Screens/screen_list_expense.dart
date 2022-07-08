@@ -10,6 +10,8 @@ import 'package:makeup_webapp/Screens/screen_expense_details.dart';
 import 'package:makeup_webapp/Screens/screen_login.dart';
 import 'dart:convert';
 
+import 'package:makeup_webapp/Screens/screen_myprofile.dart';
+
 enum TransactionType {
   expense,
   income,
@@ -57,16 +59,33 @@ class _ScreenListExpenseState extends State<ScreenListExpense> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text("Welcome, ${LoginUserDB.instance.userModel?.name}!"),
-                TextButton(
-                  onPressed: () {
-                    signout(context);
-                  },
-                  child: const Text(
-                    "Logout",
-                    style: TextStyle(
-                      color: Colors.white,
+                Row(
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        //go to profile page
+                        goToProfilePage(context);
+                      },
+                      child: const Text(
+                        "My profile",
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
-                  ),
+                    TextButton(
+                      onPressed: () {
+                        //signout
+                        signout(context);
+                      },
+                      child: const Text(
+                        "Logout",
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -192,7 +211,8 @@ class _ScreenListExpenseState extends State<ScreenListExpense> {
                           IconButton(
                               onPressed: () {
                                 //go to detail page
-                                goToDetailPage(context, transactions[index]);
+                                showDetailPopup(context, transactions[index]);
+                                //goToDetailPage(context, transactions[index]);
                               },
                               icon: const Icon(
                                 Icons.arrow_forward,
@@ -261,9 +281,12 @@ class _ScreenListExpenseState extends State<ScreenListExpense> {
     }
   }
 
-  goToDetailPage(BuildContext context, TransactionModel transaction) {
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (ctx) => ScreenExpenseDetail(transaction: transaction)));
+  goToProfilePage(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => ScreenProfile(),
+      ),
+    );
   }
 
   goToAddTransactionPage(
@@ -273,7 +296,10 @@ class _ScreenListExpenseState extends State<ScreenListExpense> {
         builder: (ctx) {
           return AlertDialog(
             shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0))),
+              borderRadius: BorderRadius.all(
+                Radius.circular(10.0),
+              ),
+            ),
             content: Builder(
               builder: (context) {
                 // Get available height and width of the build area of this widget. Make a choice depending on the size.
@@ -301,6 +327,30 @@ class _ScreenListExpenseState extends State<ScreenListExpense> {
     //     transaction: transaction,
     //   ),
     // ));
+  }
+
+  showDetailPopup(BuildContext context, TransactionModel transaction) {
+    showDialog(
+        context: context,
+        builder: (ctx) {
+          return AlertDialog(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(10.0),
+              ),
+            ),
+            content: Builder(builder: (context) {
+              var height = MediaQuery.of(context).size.height;
+              var width = MediaQuery.of(context).size.width;
+
+              return SizedBox(
+                width: 400,
+                height: 300,
+                child: ScreenExpenseDetail(transaction: transaction),
+              );
+            }),
+          );
+        });
   }
 
   Future<void> deleteTransaction(TransactionModel transaction) async {

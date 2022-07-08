@@ -12,76 +12,49 @@ class ScreenExpenseDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Row(
-            children: const [
-              Text("Edit transaction"),
-              SizedBox(),
-            ],
-          ),
-        ),
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(30),
-          child: SizedBox(
-            width: double.infinity,
-            height: double.infinity,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Text(
-                    transaction.title ?? "",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
+                Text(
+                  transaction.title ?? "",
+                  style: const TextStyle(
+                    color: Color.fromARGB(255, 4, 134, 71),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Text(
-                    transaction.amount ?? "",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Text(
-                    transaction.type ?? "",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Text(
-                    transaction.date ?? "",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Text(
-                    transaction.note ?? "",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
+                Text(
+                  "€${transaction.amount}",
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
                   ),
                 ),
               ],
             ),
-          ),
+            Text(
+              "On ${transaction.date ?? ""}",
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+              ),
+            ),
+            Text(
+              "Note: ${transaction.note ?? ""}",
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+              ),
+            ),
+          ],
         ),
       ),
     );

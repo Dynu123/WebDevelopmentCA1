@@ -24,8 +24,6 @@ class _ScreenSignupState extends State<ScreenSignup> {
 
   final _phoneController = TextEditingController();
 
-  final _addressController = TextEditingController();
-
   String? _message = "";
 
   final _formKey = GlobalKey<FormState>();

@@ -4,6 +4,7 @@ class Routes {
 
   String login = "/login";
   String signup = "/signup";
+  String updateProfile = "/user/update";
 
   String getAllProducts = "/products";
   String getProductById = "/products/{id}";

@@ -89,4 +89,40 @@ class AuthController {
     print('***************************');
     return response;
   }
+
+  Future<http.Response> updateUser(
+    String name,
+    String phone,
+  ) async {
+    String url = Routes().baseUrl + Routes().updateProfile;
+    Map data = {
+      'id': LoginUserDB.instance.userModel!.id!,
+      'name': name,
+      'phone': phone
+    };
+    var response = await http.put(
+      Uri.parse(url),
+      body: json.encode(data),
+      headers: {
+        'Authorization': "${LoginUserDB.instance.userModel?.token}",
+        "content-type": "application/json",
+        "Access-Control-Allow-Origin": "*"
+      },
+    );
+    // ignore: avoid_print
+    print('***************************');
+    // ignore: avoid_print
+    print('URL==== $url');
+    // ignore: avoid_print
+    print('___________________________');
+    // ignore: avoid_print
+    print('Http status code==== ${response.statusCode}');
+    // ignore: avoid_print
+    print('____________________________');
+    // ignore: avoid_print
+    print('update profile response=====${json.decode(response.body)}');
+    // ignore: avoid_print
+    print('***************************');
+    return response;
+  }
 }
