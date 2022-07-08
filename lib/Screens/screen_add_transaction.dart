@@ -184,7 +184,12 @@ class _ScreenAddTransactionState extends State<ScreenAddTransaction> {
                               DateFormat dateFormat = DateFormat("dd/MMM/yyyy");
                               selectedDateString =
                                   dateFormat.format(selectedDateTemp);
+                              widget.transaction?.title = _titleController.text;
                               widget.transaction?.date = selectedDateString;
+                              widget.transaction?.amount =
+                                  _amountController.text;
+                              widget.transaction?.type = typeController;
+                              widget.transaction?.note = _noteController.text;
                             });
                           }
                         },
