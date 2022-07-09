@@ -13,7 +13,7 @@ class TransactionController {
         Uri.parse(url),
         headers: {
           "content-type": "application/json",
-          'Authorization': "${LoginUserDB.instance.userModel?.token}",
+          'Authorization': "Bearer ${LoginUserDB.instance.userModel?.token}",
           'Access-Control-Allow-Origin': '*'
         },
       );
@@ -22,7 +22,7 @@ class TransactionController {
       // ignore: avoid_print
       print('Http status code==== ${response.statusCode}');
       // ignore: avoid_print
-      print('get all transactions response=====${json.decode(response.body)}');
+      print('get all transactions response=====${response.body}');
       return response;
     } on Exception catch (e) {
       // ignore: avoid_print
@@ -48,7 +48,7 @@ class TransactionController {
         body: json.encode(data),
         headers: {
           "content-type": "application/json",
-          'Authorization': "${LoginUserDB.instance.userModel?.token}",
+          'Authorization': "Bearer ${LoginUserDB.instance.userModel?.token}",
           'Access-Control-Allow-Origin': '*'
         },
       );
@@ -83,7 +83,7 @@ class TransactionController {
         body: json.encode(data),
         headers: {
           "content-type": "application/json",
-          'Authorization': "${LoginUserDB.instance.userModel?.token}",
+          'Authorization': "Bearer ${LoginUserDB.instance.userModel?.token}",
           'Access-Control-Allow-Origin': '*'
         },
       );
@@ -110,7 +110,7 @@ class TransactionController {
       var response = await http.delete(
         Uri.parse(url),
         headers: {
-          'Authorization': "${LoginUserDB.instance.userModel?.token}",
+          'Authorization': "Bearer ${LoginUserDB.instance.userModel?.token}",
           'Access-Control-Allow-Origin': '*'
         },
       );

@@ -104,7 +104,7 @@ class AuthController {
       Uri.parse(url),
       body: json.encode(data),
       headers: {
-        'Authorization': "${LoginUserDB.instance.userModel?.token}",
+        'Authorization': "Bearer ${LoginUserDB.instance.userModel?.token}",
         "content-type": "application/json",
         "Access-Control-Allow-Origin": "*"
       },

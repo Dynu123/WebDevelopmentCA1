@@ -60,11 +60,11 @@ class _ScreenProfileState extends State<ScreenProfile> {
                         ),
                       ),
                     ),
-                    Center(
+                    const Center(
                       child: CircleAvatar(
                         radius: 60,
-                        child: Image.network(
-                          "https://www.pngkey.com/png/full/115-1150152_default-profile-picture-avatar-png-green.png",
+                        backgroundImage: AssetImage(
+                          "assets/images/avatar.jpeg",
                         ),
                       ),
                     ),
