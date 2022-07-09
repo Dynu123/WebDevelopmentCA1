@@ -275,6 +275,10 @@ class _ScreenListExpenseState extends State<ScreenListExpense> {
       var message = allTransResp['result']['message'];
       ScaffoldMessenger.of(_scaffoldKey.currentContext!)
           .showSnackBar(SnackBar(content: Text(message)));
+    } else if (response.statusCode == 401) {
+      var message = allTransResp['msg'];
+      ScaffoldMessenger.of(_scaffoldKey.currentContext!)
+          .showSnackBar(SnackBar(content: Text(message)));
     } else {
       ScaffoldMessenger.of(_scaffoldKey.currentContext!)
           .showSnackBar(SnackBar(content: Text(response.body.toString())));
@@ -284,7 +288,7 @@ class _ScreenListExpenseState extends State<ScreenListExpense> {
   goToProfilePage(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (ctx) => ScreenProfile(),
+        builder: (ctx) => const ScreenProfile(),
       ),
     );
   }

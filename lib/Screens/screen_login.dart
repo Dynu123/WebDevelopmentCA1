@@ -21,6 +21,7 @@ class _ScreenLoginState extends State<ScreenLogin> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   String? _message = "";
   Color? _messageColor = Colors.red;
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -112,20 +113,22 @@ class _ScreenLoginState extends State<ScreenLogin> {
                       SizedBox(
                           width: double.infinity,
                           height: 40,
-                          child: ElevatedButton(
-                              // ignore: prefer_const_constructors
-                              style: ElevatedButton.styleFrom(
-                                  primary: Colors.black),
-                              onPressed: () {
-                                //action
-                                if (_formKey.currentState!.validate()) {
-                                  loginUser();
-                                } else {
-                                  print("no data");
-                                }
-                                ;
-                              },
-                              child: const Text("Login"))),
+                          child: isLoading
+                              ? const CircularProgressIndicator()
+                              : ElevatedButton(
+                                  // ignore: prefer_const_constructors
+                                  style: ElevatedButton.styleFrom(
+                                      primary: Colors.black),
+                                  onPressed: () {
+                                    //action
+                                    if (_formKey.currentState!.validate()) {
+                                      loginUser();
+                                    } else {
+                                      print("no data");
+                                    }
+                                    ;
+                                  },
+                                  child: const Text("Login"))),
                       const SizedBox(
                         height: 20,
                       ),
@@ -155,8 +158,13 @@ class _ScreenLoginState extends State<ScreenLogin> {
     final email = _emailController.text;
     final password = _passwordController.text;
     AuthController authController = AuthController();
-
+    setState(() {
+      isLoading = !isLoading;
+    });
     var response = await authController.loginUser(email, password);
+    setState(() {
+      isLoading = !isLoading;
+    });
     if (response != null) {
       var loginResp = json.decode(response.body);
       if (response.statusCode == 200) {
