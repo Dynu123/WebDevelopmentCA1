@@ -465,7 +465,6 @@ class _ScreenListExpenseState extends State<ScreenListExpense> {
         ),
         backgroundColor: const Color.fromARGB(255, 4, 134, 71),
       ));
-      
     } else if (response.statusCode == 400) {
       var message = deletedTransResp['result']['message'];
       ScaffoldMessenger.of(_scaffoldKey.currentContext!).showSnackBar(SnackBar(
