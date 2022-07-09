@@ -113,22 +113,25 @@ class _ScreenLoginState extends State<ScreenLogin> {
                       SizedBox(
                           width: double.infinity,
                           height: 40,
-                          child: isLoading
-                              ? const CircularProgressIndicator()
-                              : ElevatedButton(
-                                  // ignore: prefer_const_constructors
-                                  style: ElevatedButton.styleFrom(
-                                      primary: Colors.black),
-                                  onPressed: () {
-                                    //action
-                                    if (_formKey.currentState!.validate()) {
-                                      loginUser();
-                                    } else {
-                                      print("no data");
-                                    }
-                                    ;
-                                  },
-                                  child: const Text("Login"))),
+                          child: ElevatedButton(
+                              // ignore: prefer_const_constructors
+                              style: ElevatedButton.styleFrom(
+                                  primary: Colors.black),
+                              onPressed: () {
+                                //action
+                                if (_formKey.currentState!.validate()) {
+                                  loginUser();
+                                } else {
+                                  print("no data");
+                                }
+                                ;
+                              },
+                              child: isLoading
+                                  ? const CircularProgressIndicator(
+                                      valueColor:
+                                          AlwaysStoppedAnimation(Colors.white),
+                                    )
+                                  : Text("Login"))),
                       const SizedBox(
                         height: 20,
                       ),

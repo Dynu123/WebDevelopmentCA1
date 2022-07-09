@@ -40,6 +40,7 @@ class _ScreenAddTransactionState extends State<ScreenAddTransaction> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   String? selectedDateString;
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -239,9 +240,14 @@ class _ScreenAddTransactionState extends State<ScreenAddTransaction> {
                             print("no data");
                           }
                         },
-                        child: widget.action == ActionType.add
-                            ? const Text("Add")
-                            : const Text("Update"),
+                        child: isLoading
+                            ? const CircularProgressIndicator(
+                                valueColor:
+                                    AlwaysStoppedAnimation(Colors.white),
+                              )
+                            : widget.action == ActionType.add
+                                ? const Text("Add")
+                                : const Text("Update"),
                       )),
                 ],
               ),
@@ -259,9 +265,14 @@ class _ScreenAddTransactionState extends State<ScreenAddTransaction> {
     final date = selectedDateString;
     final note = _noteController.text;
     TransactionController transController = TransactionController();
-
+    setState(() {
+      isLoading = !isLoading;
+    });
     var response = await transController.addTransaction(
         title, amount, type, date, note, LoginUserDB.instance.userModel!.id);
+    setState(() {
+      isLoading = !isLoading;
+    });
     var newTransResp = json.decode(response!.body);
     if (response.statusCode == 200) {
       if (newTransResp['result']['code'] == '200') {

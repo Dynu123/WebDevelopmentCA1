@@ -17,6 +17,7 @@ class _ScreenProfileState extends State<ScreenProfile> {
   bool readOnly = true;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
+  bool isLoading = false;
 
   @protected
   @mustCallSuper
@@ -167,9 +168,14 @@ class _ScreenProfileState extends State<ScreenProfile> {
 
                                 updateProfle();
                               },
-                              child: const Text(
-                                "Update",
-                              ),
+                              child: isLoading
+                                  ? const CircularProgressIndicator(
+                                      valueColor:
+                                          AlwaysStoppedAnimation(Colors.white),
+                                    )
+                                  : const Text(
+                                      "Update",
+                                    ),
                             ),
                           ),
                         ),
@@ -191,7 +197,13 @@ class _ScreenProfileState extends State<ScreenProfile> {
     AuthController authController = AuthController();
 
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        isLoading = !isLoading;
+      });
       var response = await authController.updateUser(name, phone);
+      setState(() {
+        isLoading = !isLoading;
+      });
       var signUpResp = json.decode(response.body);
       if (response.statusCode == 200) {
         if (signUpResp['result']['code'] == '200') {

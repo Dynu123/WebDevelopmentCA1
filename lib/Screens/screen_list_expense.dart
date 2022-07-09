@@ -26,7 +26,7 @@ class ScreenListExpense extends StatefulWidget {
 
 class _ScreenListExpenseState extends State<ScreenListExpense> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-
+  bool isLoading = false;
   List<TransactionModel> transactions = [];
 
   @protected
@@ -40,199 +40,203 @@ class _ScreenListExpenseState extends State<ScreenListExpense> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      //call get transaction list api
-    });
-    return Scaffold(
-        key: _scaffoldKey,
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.black,
-          child: const Icon(Icons.add),
-          onPressed: () {
-            goToAddTransactionPage(context, ActionType.add, null);
-          },
-        ),
-        appBar: AppBar(
-          title: Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("Welcome, ${LoginUserDB.instance.userModel?.name}!"),
-                Row(
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        //go to profile page
-                        goToProfilePage(context);
-                      },
-                      child: const Text(
-                        "My profile",
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        //signout
-                        signout(context);
-                      },
-                      child: const Text(
-                        "Logout",
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+    return isLoading
+        ? const Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation(Colors.black),
             ),
-          ),
-        ),
-        backgroundColor: Colors.white,
-        body: SafeArea(
-            child: ListView.separated(
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Card(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
+          )
+        : Scaffold(
+            key: _scaffoldKey,
+            floatingActionButton: FloatingActionButton(
+              backgroundColor: Colors.black,
+              child: const Icon(Icons.add),
+              onPressed: () {
+                goToAddTransactionPage(context, ActionType.add, null);
+              },
+            ),
+            appBar: AppBar(
+              title: Padding(
+                padding: const EdgeInsets.only(right: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    ListTile(
-                      leading: const Icon(
-                        Icons.currency_exchange,
-                        size: 30,
-                        color: Color.fromARGB(255, 4, 134, 71),
-                      ),
-                      title: Text(
-                        transactions[index].title ?? "",
-                        style: const TextStyle(
-                          color: Color.fromARGB(255, 4, 134, 71),
-                          fontWeight: FontWeight.normal,
-                          fontSize: 17,
+                    Text("Welcome, ${LoginUserDB.instance.userModel?.name}!"),
+                    Row(
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            //go to profile page
+                            goToProfilePage(context);
+                          },
+                          child: const Text(
+                            "My profile",
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
-                      ),
-                      subtitle: Text(
-                        transactions[index].type ?? "",
-                        style: const TextStyle(color: Colors.grey),
-                      ),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "€${transactions[index].amount}",
-                                style: const TextStyle(
-                                  color: Color.fromARGB(255, 4, 134, 71),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 8,
-                              ),
-                              Text(
-                                transactions[index].date ?? "",
-                                style: const TextStyle(color: Colors.grey),
-                              ),
-                            ],
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              //edit item
-                              goToAddTransactionPage(
-                                context,
-                                ActionType.edit,
-                                transactions[index],
-                              );
-                            },
-                            icon: const Icon(
-                              Icons.edit,
-                              color: Color.fromARGB(255, 4, 134, 71),
+                        TextButton(
+                          onPressed: () {
+                            //signout
+                            signout(context);
+                          },
+                          child: const Text(
+                            "Logout",
+                            style: TextStyle(
+                              color: Colors.white,
                             ),
                           ),
-                          IconButton(
-                            onPressed: () {
-                              //delete item
-                              showDialog(
-                                  context: context,
-                                  builder: (ctx) {
-                                    return AlertDialog(
-                                      title: const Text(
-                                        "Are you sure you want to delete?",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.normal,
-                                            fontSize: 17),
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.of(ctx).pop();
-                                          },
-                                          child: const Text(
-                                            "Cancel",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 15,
-                                              color: Color.fromARGB(
-                                                  255, 4, 134, 71),
-                                            ),
-                                          ),
-                                        ),
-                                        TextButton(
-                                          onPressed: () {
-                                            deleteTransaction(
-                                                transactions[index]);
-                                            Navigator.of(ctx).pop();
-                                          },
-                                          child: const Text(
-                                            "OK",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 15,
-                                              color: Color(0xB7D8382D),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    );
-                                  });
-                            },
-                            icon: const Icon(
-                              Icons.delete,
-                              color: Colors.red,
-                            ),
-                          ),
-                          IconButton(
-                              onPressed: () {
-                                //go to detail page
-                                showDetailPopup(context, transactions[index]);
-                                //goToDetailPage(context, transactions[index]);
-                              },
-                              icon: const Icon(
-                                Icons.arrow_forward,
-                                //color: Color.fromARGB(255, 4, 134, 71),
-                              )),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
-            );
-          },
-          separatorBuilder: (ctx, index) {
-            return const Divider(
-              thickness: 0,
-            );
-          },
-          itemCount: transactions.length,
-        )));
+            ),
+            backgroundColor: Colors.white,
+            body: SafeArea(
+                child: ListView.separated(
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Card(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ListTile(
+                          leading: const Icon(
+                            Icons.currency_exchange,
+                            size: 30,
+                            color: Color.fromARGB(255, 4, 134, 71),
+                          ),
+                          title: Text(
+                            transactions[index].title ?? "",
+                            style: const TextStyle(
+                              color: Color.fromARGB(255, 4, 134, 71),
+                              fontWeight: FontWeight.normal,
+                              fontSize: 17,
+                            ),
+                          ),
+                          subtitle: Text(
+                            transactions[index].type ?? "",
+                            style: const TextStyle(color: Colors.grey),
+                          ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "€${transactions[index].amount}",
+                                    style: const TextStyle(
+                                      color: Color.fromARGB(255, 4, 134, 71),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 8,
+                                  ),
+                                  Text(
+                                    transactions[index].date ?? "",
+                                    style: const TextStyle(color: Colors.grey),
+                                  ),
+                                ],
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  //edit item
+                                  goToAddTransactionPage(
+                                    context,
+                                    ActionType.edit,
+                                    transactions[index],
+                                  );
+                                },
+                                icon: const Icon(
+                                  Icons.edit,
+                                  color: Color.fromARGB(255, 4, 134, 71),
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  //delete item
+                                  showDialog(
+                                      context: context,
+                                      builder: (ctx) {
+                                        return AlertDialog(
+                                          title: const Text(
+                                            "Are you sure you want to delete?",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.normal,
+                                                fontSize: 17),
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(ctx).pop();
+                                              },
+                                              child: const Text(
+                                                "Cancel",
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 15,
+                                                  color: Color.fromARGB(
+                                                      255, 4, 134, 71),
+                                                ),
+                                              ),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                deleteTransaction(
+                                                    transactions[index]);
+                                                Navigator.of(ctx).pop();
+                                              },
+                                              child: const Text(
+                                                "OK",
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 15,
+                                                  color: Color(0xB7D8382D),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      });
+                                },
+                                icon: const Icon(
+                                  Icons.delete,
+                                  color: Colors.red,
+                                ),
+                              ),
+                              IconButton(
+                                  onPressed: () {
+                                    //go to detail page
+                                    showDetailPopup(
+                                        context, transactions[index]);
+                                    //goToDetailPage(context, transactions[index]);
+                                  },
+                                  icon: const Icon(
+                                    Icons.arrow_forward,
+                                    //color: Color.fromARGB(255, 4, 134, 71),
+                                  )),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+              separatorBuilder: (ctx, index) {
+                return const Divider(
+                  thickness: 0,
+                );
+              },
+              itemCount: transactions.length,
+            )));
   }
 
   signout(BuildContext context) {
@@ -248,9 +252,13 @@ class _ScreenListExpenseState extends State<ScreenListExpense> {
 
   Future<void> getAllTransactions() async {
     TransactionController transController = TransactionController();
-
+    setState(() {
+      isLoading = !isLoading;
+    });
     var response = await transController.getAllTransactions();
-
+    setState(() {
+      isLoading = !isLoading;
+    });
     var allTransResp = json.decode(response!.body);
 
     if (response.statusCode == 200) {
@@ -359,8 +367,13 @@ class _ScreenListExpenseState extends State<ScreenListExpense> {
 
   Future<void> deleteTransaction(TransactionModel transaction) async {
     TransactionController transController = TransactionController();
-
+    setState(() {
+      isLoading = !isLoading;
+    });
     var response = await transController.deleteTransaction(transaction);
+    setState(() {
+      isLoading = !isLoading;
+    });
     var deletedTransResp = json.decode(response!.body);
 
     if (response.statusCode == 200) {
