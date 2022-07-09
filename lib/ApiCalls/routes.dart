@@ -16,4 +16,5 @@ class Routes {
   String updateTransaction = "/transactions/update";
   String addTransaction = "/transactions/add";
   String deleteTransactionById = "/transactions/delete";
+  String getTransactionByType = "/transactions/{type}";
 }

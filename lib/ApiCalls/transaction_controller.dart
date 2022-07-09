@@ -4,6 +4,7 @@ import 'package:makeup_webapp/ApiCalls/routes.dart';
 import 'dart:convert';
 
 import 'package:makeup_webapp/Model/Transaction/transaction_model/transaction_model.dart';
+import 'package:makeup_webapp/Screens/screen_list_expense.dart';
 
 class TransactionController {
   Future<http.Response?> getAllTransactions() async {
@@ -23,6 +24,31 @@ class TransactionController {
       print('Http status code==== ${response.statusCode}');
       // ignore: avoid_print
       print('get all transactions response=====${response.body}');
+      return response;
+    } on Exception catch (e) {
+      // ignore: avoid_print
+      print('error=====$e');
+    }
+    return null;
+  }
+
+  Future<http.Response?> getTransactionsByType(TransactionType type) async {
+    String url = Routes().baseUrl +
+        Routes().getTransactionByType.replaceFirst('{type}', type.name);
+    try {
+      var response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Authorization': "Bearer ${LoginUserDB.instance.userModel?.token}",
+          'Access-Control-Allow-Origin': '*'
+        },
+      );
+      // ignore: avoid_print
+      print('URL==== $url');
+      // ignore: avoid_print
+      print('Http status code==== ${response.statusCode}');
+      // ignore: avoid_print
+      print('get all transactions by type response=====${response.body}');
       return response;
     } on Exception catch (e) {
       // ignore: avoid_print

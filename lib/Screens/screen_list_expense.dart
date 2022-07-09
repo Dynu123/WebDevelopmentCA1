@@ -66,6 +66,42 @@ class _ScreenListExpenseState extends State<ScreenListExpense> {
                       children: [
                         TextButton(
                           onPressed: () {
+                            //show all
+                            getTransactionList();
+                          },
+                          child: const Text(
+                            "All",
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            //show all incomes
+                            getTransactionsByType(TransactionType.income);
+                          },
+                          child: const Text(
+                            "Income",
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            //show all expenses
+                            getTransactionsByType(TransactionType.expense);
+                          },
+                          child: const Text(
+                            "Expense",
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
                             //go to profile page
                             goToProfilePage(context);
                           },
@@ -299,6 +335,49 @@ class _ScreenListExpenseState extends State<ScreenListExpense> {
         builder: (ctx) => const ScreenProfile(),
       ),
     );
+  }
+
+  Future<void> getTransactionsByType(TransactionType type) async {
+    TransactionController transController = TransactionController();
+    setState(() {
+      isLoading = !isLoading;
+    });
+    var response = await transController.getTransactionsByType(type);
+    setState(() {
+      isLoading = !isLoading;
+    });
+    var allTransByTypeResp = json.decode(response!.body);
+
+    if (response.statusCode == 200) {
+      if (allTransByTypeResp['result']['code'] == 200) {
+        final transactionList = allTransByTypeResp['result']['data'];
+        setState(() {
+          transactions.clear();
+        });
+
+        for (var transaction in transactionList) {
+          var eachTransaction = TransactionModel.fromJson(transaction);
+          setState(() {
+            transactions.add(eachTransaction);
+          });
+        }
+      } else {
+        var message = allTransByTypeResp['result']['message'];
+        ScaffoldMessenger.of(_scaffoldKey.currentContext!)
+            .showSnackBar(SnackBar(content: Text(message)));
+      }
+    } else if (response.statusCode == 400) {
+      var message = allTransByTypeResp['result']['message'];
+      ScaffoldMessenger.of(_scaffoldKey.currentContext!)
+          .showSnackBar(SnackBar(content: Text(message)));
+    } else if (response.statusCode == 401) {
+      var message = allTransByTypeResp['msg'];
+      ScaffoldMessenger.of(_scaffoldKey.currentContext!)
+          .showSnackBar(SnackBar(content: Text(message)));
+    } else {
+      ScaffoldMessenger.of(_scaffoldKey.currentContext!)
+          .showSnackBar(SnackBar(content: Text(response.body.toString())));
+    }
   }
 
   goToAddTransactionPage(
