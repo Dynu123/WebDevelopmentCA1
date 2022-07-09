@@ -52,8 +52,8 @@ class _ScreenAddTransactionState extends State<ScreenAddTransaction> {
           _titleController.text = widget.transaction!.title!;
           _amountController.text = widget.transaction!.amount!;
           typeController = widget.transaction!.type!;
-          selectedDateString = widget.transaction?.date ?? "";
-          _noteController.text = widget.transaction?.note ?? "";
+          selectedDateString = widget.transaction?.date!;
+          _noteController.text = widget.transaction!.note!;
         } else {
           Navigator.of(context).pop();
         }
