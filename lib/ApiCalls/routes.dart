@@ -1,6 +1,6 @@
 class Routes {
   String baseUrl =
-      "https://makeup-api-backend-flask.herokuapp.com"; //"http://makeup-api-backend-flask.herokuapp.com";
+      "https://finmanager-api-backend-flask.herokuapp.com"; //"http://makeup-api-backend-flask.herokuapp.com";
 
   String login = "/login";
   String signup = "/signup";
