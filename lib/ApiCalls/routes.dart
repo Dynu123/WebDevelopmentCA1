@@ -6,15 +6,11 @@ class Routes {
   String signup = "/signup";
   String updateProfile = "/user/update";
 
-  String getAllProducts = "/products";
-  String getProductById = "/products/{id}";
-  String getProductsByCategory = "/products/{category}/{value}";
-
   //Transactions
   String getAllTransactions = "/transactions";
   String getTransactionById = "/transactions/{id}";
   String updateTransaction = "/transactions/update";
   String addTransaction = "/transactions/add";
-  String deleteTransactionById = "/transactions/delete";
+  String deleteTransactionById = "/transactions/delete/{id}";
   String getTransactionByType = "/transactions/{type}";
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:makeup_webapp/ApiCalls/auth_controller.dart';
 import 'package:makeup_webapp/ApiCalls/routes.dart';
@@ -128,8 +129,8 @@ class TransactionController {
   }
 
   Future<http.Response?> deleteTransaction(TransactionModel transaction) async {
-    String url =
-        "${Routes().baseUrl}${Routes().deleteTransactionById}/${transaction.transactionId}";
+    String url = Routes().baseUrl + Routes().deleteTransactionById.replaceFirst('{id}', "${transaction.transactionId}");
+    //"${Routes().baseUrl}${Routes().deleteTransactionById}/${transaction.transactionId}";
     // ignore: avoid_print
     print('URL==== $url');
     try {

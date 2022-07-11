@@ -42,9 +42,6 @@ class MyApp extends StatelessWidget {
         "signup": (ctx) {
           return ScreenSignup();
         },
-        "home": (ctx) {
-          return ScreenHome();
-        }
       }, //ProductItem
     );
   }
