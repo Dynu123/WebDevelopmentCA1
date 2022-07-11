@@ -162,6 +162,8 @@ class _ScreenSignupState extends State<ScreenSignup> {
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return "Field cannot be empty";
+                      } else if (value.length != 10) {
+                        return "Phone number should be 10 digits";
                       } else {
                         return null;
                       }

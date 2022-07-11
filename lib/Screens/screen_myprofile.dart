@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:makeup_webapp/ApiCalls/auth_controller.dart';
 
 class ScreenProfile extends StatefulWidget {
@@ -88,6 +89,13 @@ class _ScreenProfileState extends State<ScreenProfile> {
                       decoration: const InputDecoration(
                         hintText: "Enter name",
                       ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Field cannot be empty";
+                        } else {
+                          return null;
+                        }
+                      },
                     ),
                     const SizedBox(
                       height: 20,
@@ -125,9 +133,19 @@ class _ScreenProfileState extends State<ScreenProfile> {
                     TextFormField(
                       readOnly: readOnly,
                       controller: _phoneController,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       decoration: const InputDecoration(
                         hintText: "Enter phone number",
                       ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Field cannot be empty";
+                        } else if (value.length != 10) {
+                          return "Phone number should be 10 digits";
+                        } else {
+                          return null;
+                        }
+                      },
                     ),
                     const SizedBox(
                       height: 20,
@@ -207,8 +225,11 @@ class _ScreenProfileState extends State<ScreenProfile> {
       var signUpResp = json.decode(response.body);
       if (response.statusCode == 200) {
         if (signUpResp['result']['code'] == '200') {
-          LoginUserDB.instance.userModel!.name = _nameController.text;
-          LoginUserDB.instance.userModel!.phone = _phoneController.text;
+          setState(() {
+            LoginUserDB.instance.userModel!.name = _nameController.text;
+            LoginUserDB.instance.userModel!.phone = _phoneController.text;
+          });
+
           var message = signUpResp['result']['message'];
           ScaffoldMessenger.of(_scaffoldKey.currentContext!)
               .showSnackBar(SnackBar(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:makeup_webapp/ApiCalls/auth_controller.dart';
 import 'package:makeup_webapp/ApiCalls/transaction_api_calls.dart';
 import 'package:makeup_webapp/ApiCalls/transaction_controller.dart';
@@ -112,6 +113,7 @@ class _ScreenAddTransactionState extends State<ScreenAddTransaction> {
                     height: 20,
                   ),
                   TextFormField(
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     cursorColor: Colors.black,
                     controller: _amountController,
                     decoration: const InputDecoration(

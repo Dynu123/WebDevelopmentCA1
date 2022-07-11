@@ -22,6 +22,7 @@ class _ScreenLoginState extends State<ScreenLogin> {
   String? _message = "";
   Color? _messageColor = Colors.red;
   bool isLoading = false;
+  bool showPassword = false;
 
   @override
   Widget build(BuildContext context) {
@@ -70,10 +71,20 @@ class _ScreenLoginState extends State<ScreenLogin> {
                       TextFormField(
                         cursorColor: Colors.black,
                         controller: _passwordController,
-                        obscureText: true,
-                        decoration: const InputDecoration(
-                            icon: Icon(Icons.password_rounded),
-                            border: OutlineInputBorder(),
+                        obscureText: !showPassword,
+                        decoration: InputDecoration(
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  showPassword = !showPassword;
+                                });
+                              },
+                              icon: Icon(showPassword
+                                  ? Icons.visibility_off_rounded
+                                  : Icons.visibility_rounded),
+                            ),
+                            icon: const Icon(Icons.password_rounded),
+                            border: const OutlineInputBorder(),
                             hintText: "Enter password"),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
