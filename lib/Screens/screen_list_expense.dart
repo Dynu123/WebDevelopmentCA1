@@ -204,49 +204,7 @@ class _ScreenListExpenseState extends State<ScreenListExpense> {
                               IconButton(
                                 onPressed: () {
                                   //delete item
-                                  showDialog(
-                                      context: context,
-                                      builder: (ctx) {
-                                        return AlertDialog(
-                                          title: const Text(
-                                            "Are you sure you want to delete?",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.normal,
-                                                fontSize: 17),
-                                          ),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.of(ctx).pop();
-                                              },
-                                              child: const Text(
-                                                "Cancel",
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 15,
-                                                  color: Color.fromARGB(
-                                                      255, 4, 134, 71),
-                                                ),
-                                              ),
-                                            ),
-                                            TextButton(
-                                              onPressed: () {
-                                                deleteTransaction(
-                                                    transactions[index]);
-                                                Navigator.of(ctx).pop();
-                                              },
-                                              child: const Text(
-                                                "OK",
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 15,
-                                                  color: Color(0xB7D8382D),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        );
-                                      });
+                                  showDeleteConfirmationPopup(context, transactions[index]);
                                 },
                                 icon: const Icon(
                                   Icons.delete,
@@ -279,6 +237,62 @@ class _ScreenListExpenseState extends State<ScreenListExpense> {
               },
               itemCount: transactions.length,
             )));
+  }
+
+   showDeleteConfirmationPopup(
+      BuildContext context, TransactionModel transaction) {
+    showDialog(
+        context: context,
+        builder: (ctx) {
+          return AlertDialog(
+                                          title: const Text(
+                                            "Are you sure you want to delete?",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.normal,
+                                                fontSize: 17),
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(ctx).pop();
+                                              },
+                                              child: const Text(
+                                                "Cancel",
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 15,
+                                                  color: Color.fromARGB(
+                                                      255, 4, 134, 71),
+                                                ),
+                                              ),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                deleteTransaction(
+                                                    transaction);
+                                                Navigator.of(ctx).pop();
+                                              },
+                                              child: const Text(
+                                                "OK",
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 15,
+                                                  color: Color(0xB7D8382D),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        );
+        }).then((_) => setState(() {
+          getAllTransactions();
+        }));
+
+    // Navigator.of(context).push(MaterialPageRoute(
+    //   builder: (ctx) => ScreenAddTransaction(
+    //     action: action,
+    //     transaction: transaction,
+    //   ),
+    // ));
   }
 
   signout(BuildContext context) {
@@ -340,7 +354,9 @@ class _ScreenListExpenseState extends State<ScreenListExpense> {
       MaterialPageRoute(
         builder: (ctx) => const ScreenProfile(),
       ),
-    );
+    ).then((_) => setState(() {
+          getAllTransactions();
+        }));
   }
 
   Future<void> getTransactionsByType(TransactionType type) async {
