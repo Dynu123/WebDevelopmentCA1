@@ -1,6 +1,5 @@
 class Routes {
-  String baseUrl = "http://127.0.0.1:5000";
-      //"https://finmanager-api-backend-flask.herokuapp.com";
+  String baseUrl = "https://finmanager-api-backend-flask.herokuapp.com";
 
   String login = "/login";
   String signup = "/signup";
