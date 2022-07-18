@@ -38,182 +38,194 @@ class _ScreenSignupState extends State<ScreenSignup> {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Colors.black,
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Container(
-            width: 400,
-            decoration: const BoxDecoration(
-              color: Colors.grey,
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Form(
-                key: _formKey,
-                child: Column(children: [
-                  TextFormField(
-                    cursorColor: Colors.black,
-                    controller: _nameController,
-                    decoration: const InputDecoration(
-                        icon: Icon(Icons.person_rounded),
-                        hintText: "Name",
-                        border: OutlineInputBorder()),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Field cannot be empty";
-                      } else {
-                        return null;
-                      }
-                    },
+      body: Stack(
+        children: [
+          Container(decoration: BoxDecoration(image: DecorationImage(image: const AssetImage('assets/images/login-bg.jpeg',),fit: BoxFit.cover, colorFilter: 
+      ColorFilter.mode(Colors.black.withOpacity(0.2), 
+      BlendMode.dstATop),),),),
+          Center(
+          child: Column(
+            children: [
+              const Padding(
+                  padding: EdgeInsets.all(30.0),
+                  child:  Image(image: AssetImage('assets/images/logo.jpeg'),height: 100),
+                ),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Container(
+                  width: 400,
+                  height: 610,
+                  decoration: const BoxDecoration(
+                    color: Colors.grey,
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  TextFormField(
-                    cursorColor: Colors.black,
-                    controller: _emailController,
-                    decoration: const InputDecoration(
-                        icon: Icon(Icons.email_rounded),
-                        hintText: "Email",
-                        border: OutlineInputBorder()),
-                    validator: (value) {
-                      bool emailValid = RegExp(
-                              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                          .hasMatch(value ?? "");
-                      if (value == null || value.isEmpty) {
-                        return "Field cannot be empty";
-                      } else if (!emailValid) {
-                        return "Email is not valid";
-                      } else {
-                        return null;
-                      }
-                    },
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  TextFormField(
-                    cursorColor: Colors.black,
-                    controller: _passwordController,
-                    obscureText: !showPassword,
-                    decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              showPassword = !showPassword;
-                            });
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(children: [
+                        TextFormField(
+                          cursorColor: Colors.black,
+                          controller: _nameController,
+                          decoration: const InputDecoration(
+                              icon: Icon(Icons.person_rounded),
+                              hintText: "Name",
+                              border: OutlineInputBorder()),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Field cannot be empty";
+                            } else {
+                              return null;
+                            }
                           },
-                          icon: Icon(showPassword
-                              ? Icons.visibility_off_rounded
-                              : Icons.visibility_rounded),
                         ),
-                        icon: const Icon(Icons.password_rounded),
-                        hintText: "Enter password",
-                        border: const OutlineInputBorder()),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Field cannot be empty";
-                      } else {
-                        return null;
-                      }
-                    },
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  TextFormField(
-                    obscureText: !showCPassword,
-                    cursorColor: Colors.black,
-                    controller: _confirmPasswordController,
-                    decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              showCPassword = !showCPassword;
-                            });
-                          },
-                          icon: Icon(showCPassword
-                              ? Icons.visibility_off_rounded
-                              : Icons.visibility_rounded),
+                        const SizedBox(
+                          height: 20,
                         ),
-                        icon: const Icon(Icons.password_rounded),
-                        hintText: "Confirm password",
-                        border: const OutlineInputBorder()),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Field cannot be empty";
-                      } else {
-                        return null;
-                      }
-                    },
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  TextFormField(
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    cursorColor: Colors.black,
-                    controller: _phoneController,
-                    decoration: const InputDecoration(
-                        icon: Icon(Icons.phone_rounded),
-                        hintText: "Phone",
-                        border: OutlineInputBorder()),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Field cannot be empty";
-                      } else if (value.length != 10) {
-                        return "Phone number should be 10 digits";
-                      } else {
-                        return null;
-                      }
-                    },
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        _message!,
-                        style: const TextStyle(
-                          color: Colors.red,
+                        TextFormField(
+                          cursorColor: Colors.black,
+                          controller: _emailController,
+                          decoration: const InputDecoration(
+                              icon: Icon(Icons.email_rounded),
+                              hintText: "Email",
+                              border: OutlineInputBorder()),
+                          validator: (value) {
+                            bool emailValid = RegExp(
+                                    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                .hasMatch(value ?? "");
+                            if (value == null || value.isEmpty) {
+                              return "Field cannot be empty";
+                            } else if (!emailValid) {
+                              return "Email is not valid";
+                            } else {
+                              return null;
+                            }
+                          },
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  SizedBox(
-                      width: double.infinity,
-                      height: 40,
-                      child: ElevatedButton(
-                          onPressed: () {
-                            //action
-                            signupUser();
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        TextFormField(
+                          cursorColor: Colors.black,
+                          controller: _passwordController,
+                          obscureText: !showPassword,
+                          decoration: InputDecoration(
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    showPassword = !showPassword;
+                                  });
+                                },
+                                icon: Icon(showPassword
+                                    ? Icons.visibility_off_rounded
+                                    : Icons.visibility_rounded),
+                              ),
+                              icon: const Icon(Icons.password_rounded),
+                              hintText: "Enter password",
+                              border: const OutlineInputBorder()),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Field cannot be empty";
+                            } else {
+                              return null;
+                            }
                           },
-                          child: const Text("Sign up"))),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    children: [
-                      const Text("Already have an account?"),
-                      TextButton(
-                          onPressed: () {
-                            //action
-                            Navigator.of(context).pushNamed("login");
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        TextFormField(
+                          obscureText: !showCPassword,
+                          cursorColor: Colors.black,
+                          controller: _confirmPasswordController,
+                          decoration: InputDecoration(
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    showCPassword = !showCPassword;
+                                  });
+                                },
+                                icon: Icon(showCPassword
+                                    ? Icons.visibility_off_rounded
+                                    : Icons.visibility_rounded),
+                              ),
+                              icon: const Icon(Icons.password_rounded),
+                              hintText: "Confirm password",
+                              border: const OutlineInputBorder()),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Field cannot be empty";
+                            } else {
+                              return null;
+                            }
                           },
-                          child: const Text("Sign in"))
-                    ],
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        TextFormField(
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                          cursorColor: Colors.black,
+                          controller: _phoneController,
+                          decoration: const InputDecoration(
+                              icon: Icon(Icons.phone_rounded),
+                              hintText: "Phone",
+                              border: OutlineInputBorder()),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Field cannot be empty";
+                            } else if (value.length != 10) {
+                              return "Phone number should be 10 digits";
+                            } else {
+                              return null;
+                            }
+                          },
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              _message!,
+                              style: const TextStyle(
+                                color: Colors.red,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                            width: double.infinity,
+                            height: 40,
+                            child: ElevatedButton(
+                                onPressed: () {
+                                  //action
+                                  signupUser();
+                                },
+                                child: const Text("Sign up"))),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          children: [
+                            const Text("Already have an account?"),
+                            TextButton(
+                                onPressed: () {
+                                  //action
+                                  Navigator.of(context).pushNamed("login");
+                                },
+                                child: const Text("Sign in"))
+                          ],
+                        ),
+                      ]),
+                    ),
                   ),
-                ]),
+                ),
               ),
-            ),
+            ],
           ),
-        ),
+        ),],
       ),
     );
   }

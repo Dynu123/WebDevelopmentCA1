@@ -61,7 +61,13 @@ class _ScreenListExpenseState extends State<ScreenListExpense> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    Row(
+                      children: [
+                    const Image(image: AssetImage('assets/images/logo.jpeg'), height: 100, width: 100,),
+                    const SizedBox(width: 30,),
                     Text("Welcome, ${LoginUserDB.instance.userModel?.name}!"),
+                    ],),
+                    
                     Row(
                       children: [
                         TextButton(

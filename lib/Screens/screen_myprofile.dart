@@ -33,6 +33,14 @@ class _ScreenProfileState extends State<ScreenProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: 
+        TextButton(onPressed: (){
+          Navigator.of(context).pop();
+        }, child: const Text("Go to home page", style: TextStyle(color: Colors.white,),),),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
       key: _scaffoldKey,
       backgroundColor: Colors.black,
       body: Center(

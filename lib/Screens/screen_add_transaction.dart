@@ -305,7 +305,13 @@ class _ScreenAddTransactionState extends State<ScreenAddTransaction> {
 
   Future<void> updateTransaction(TransactionModel transaction) async {
     TransactionController transController = TransactionController();
+    setState(() {
+      isLoading = !isLoading;
+    });
     var response = await transController.updateTransaction(transaction);
+    setState(() {
+      isLoading = !isLoading;
+    });
     var tranResp = json.decode(response!.body);
 
     if (response.statusCode == 200) {
